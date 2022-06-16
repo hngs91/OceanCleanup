@@ -1,0 +1,74 @@
+@import url("https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@300;400;700&family=EB+Garamond&family=Special+Elite&display=swap");
+
+/********** Page variables ****************************/
+html {
+    /* modular scale */
+    --factor: 1.5;
+    --s0: 1rem;
+    --s1: calc(var(--s0) * var(--factor));
+    --s2: calc(var(--s1) * var(--factor));
+    --s3: calc(var(--s2) * var(--factor));
+    --s4: calc(var(--s3) * var(--factor));
+    --s5: calc(var(--s4) * var(--factor));
+    --s-1: calc(var(--s0) / var(--factor));
+    --s-2: calc(var(--s-1) / var(--factor));
+    --s-3: calc(var(--s-2) / var(--factor));
+    --s-4: calc(var(--s-3) / var(--factor));
+    --s-5: calc(var(--s-4) / var(--factor));
+}
+
+/*************************** Layout **********/
+h1 {
+    /* internal h1 content is centered as well as the h1 element being centered with respect to the webpage*/
+    text-align: center;
+    margin: auto;
+    padding: var(--s2) 0 var(--s2) 0;
+    white-space: nowrap; /*ensures h1 only ever appears on one line*/
+}
+
+main {
+    width: 100ch;
+    margin: auto;
+}
+
+footer {
+    text-align: center;
+    padding: var(--s3) 0 var(--s3) 0;
+}
+
+/********** Fonts, colors, images *********************************/
+header, footer{
+    /* header and footer background image sourced from specified URL and specified font applied */
+    background: url("http://homepages.cs.ncl.ac.uk/harold.fellermann/csc8018/ocean_cleanup/resources/ocean.jpg") center no-repeat;
+    background-size: cover; /* ensures background image covers entire width of webpage no matter the screen size */
+    font-family: 'Darker Grotesque', sans-serif;
+}
+
+h1 {
+    /* colour & font applied to h1 alongside formatting from visual specification including shadowing effect */
+    color: rgb(255, 255, 255);
+    font-weight: 700; /* dictates which imported version of the font to use */
+    text-transform: uppercase;
+    text-shadow: 0.06em 0.06em 0.06em rgba(0, 0, 0, 0.5);
+    font-size: var(--s3);
+}
+
+body  {
+    /* sets font for all content within the body */
+    font-family: 'EB Garamond', serif;
+}
+
+h2, h3, figcaption {
+    /* overrides body font rules for specified elements */
+    font-family: 'Special Elite', cursive;
+}
+
+footer {
+    font-size: 1.2em;
+}
+
+footer a {
+    /* formats anchored text including removing underline */
+    text-decoration: none;
+    color: rgb(0,0,0);
+}

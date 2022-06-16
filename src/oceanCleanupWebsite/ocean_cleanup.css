@@ -1,0 +1,266 @@
+@import url("https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@300;400;700&family=EB+Garamond&family=Special+Elite&display=swap");
+
+/********** Page variables ****************************/
+html {
+    /* modular scale */
+    --factor: 1.5;
+    --s0: 1rem;
+    --s1: calc(var(--s0) * var(--factor));
+    --s2: calc(var(--s1) * var(--factor));
+    --s3: calc(var(--s2) * var(--factor));
+    --s4: calc(var(--s3) * var(--factor));
+    --s5: calc(var(--s4) * var(--factor));
+    --s-1: calc(var(--s0) / var(--factor));
+    --s-2: calc(var(--s-1) / var(--factor));
+    --s-3: calc(var(--s-2) / var(--factor));
+    --s-4: calc(var(--s-3) / var(--factor));
+    --s-5: calc(var(--s-4) / var(--factor));
+}
+
+/********** Layout *********************************/
+h1 {
+    /* internal h1 content is centered as well as the h1 element being centered with respect to the webpage*/
+    text-align: center;
+    margin: auto;
+    padding: var(--s4) 0 var(--s3) 0;
+    white-space: nowrap; /*ensures h1 only ever appears on one line*/
+}
+
+#title_spacing {
+    word-spacing: -0.20em; /*alters the space between the words in h1 to match visual specification*/
+}
+
+#the {
+    vertical-align: super;
+}
+
+nav {
+    text-align: center;
+}
+
+nav ul {
+    padding: 0;
+}
+
+nav ul li {
+    /* nav bar options are displaced horizontally */
+    display: inline-block;
+    list-style-type: none;
+    padding: var(--s-2) var(--s2) var(--s-1) var(--s2);
+}
+
+nav ul li ul {
+    display: none;
+}
+
+main {
+    margin: auto;
+    max-width: 80ch;
+}
+
+section {
+    margin-top: var(--s3);
+}
+
+#sec_summary h2 {
+    display: none;
+}
+
+footer {
+    text-align: center;
+    padding: var(--s3) 0 var(--s3) 0;
+}
+
+/********** Fonts, colors, images *********************************/
+header, footer{
+    /* header and footer background image sourced from specified URL and specified font applied */
+    background: url("http://homepages.cs.ncl.ac.uk/harold.fellermann/csc8018/ocean_cleanup/resources/ocean.jpg") center no-repeat;
+    background-size: cover; /* ensures background image covers entire width of webpage no matter the screen size */
+    font-family: 'Darker Grotesque', sans-serif;
+}
+
+h1 {
+    /* colour & font applied to h1 alongside formatting from visual specification including shadowing effect */
+    color: rgb(255, 255, 255);
+    font-weight: 700; /* dictates which imported version of the font to use */
+    text-transform: uppercase;
+    text-shadow: 0.06em 0.06em 0.06em rgba(0, 0, 0, 0.5);
+    font-size: min(12vw, 6em); /* ensures font size doesn't always decrease with screen size, at a min font is 6em regardless of width of viewpoint*/
+    word-spacing: -10px; /* counteracts the space between words from the HTMl to match the visual specification */
+}
+
+#the {
+    /* overrides h1 rules to specifically style 'the' in the title */
+    font-weight: 300;
+    font-size: 0.4em;
+    text-shadow: 0.06em 0.06em 0.06em rgba(0, 0, 0, 0.5);
+}
+
+#ocean {
+    /* overrides h1 rules to specifically style 'ocean' in the title */
+    font-weight: 400;
+}
+
+nav ul {
+    /* sets background colour for the unordered list, including setting transparency */
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+nav ul li {
+    /* overrides h1 rules to style list items as per specification */
+    font-weight: 700;
+}
+
+nav ul li:hover {
+    /* when a used hovers their cursor over a list item trigger background colour change */
+    background-color: rgb(229, 242, 241);
+}
+
+nav ul li:hover a {
+    /* ensures appearance of the anchor changes when any part of the list is hovered over not just when the anchor is directly hovered over */
+    color: rgb(37,169,172);
+}
+
+nav ul li a {
+    /* formats anchored text including removing underline */
+    text-decoration: none;
+    font-size: 1.2em;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+body  {
+    /* sets font for all content within the body */
+    font-family: 'EB Garamond', serif;
+}
+
+h2, h3, figcaption {
+    /* overrides body font rules for specified elements */
+    font-family: 'Special Elite', cursive;
+}
+
+footer a {
+    /* formats anchored text including removing underline */
+    text-decoration: none;
+    color: rgb(0,0,0);
+    font-size: 1.2em;
+}
+
+/**************** Table Appearance *************/
+table {
+    /* centers table and removes spacing between borders of table cells*/
+    margin: auto;
+    border-collapse: collapse;
+}
+
+thead {
+    /* creates bold borders explicitly for table header */
+    font-weight: bold;
+    border-top: 2px solid rgb(0, 0, 0);
+    border-bottom: 2px solid rgb(0, 0, 0);
+}
+
+tbody td {
+    /* borders for table cells */
+    border-bottom: 1px solid rgb(0, 0, 0);
+    padding: var(--s-3);
+}
+
+tbody tr:last-of-type {
+    /* specifically selects only the final table row to have a bold border applied */
+    border-bottom: 2px solid rgb(0, 0, 0);
+}
+
+/***************** Specific Styles ***********************/
+
+/* General figcaption rules */
+figcaption {
+    /* formats all figcaption elements as per visual specification*/
+    text-align: right;
+    vertical-align: text-bottom;
+    color: rgb(146, 146, 146);
+    margin-right: var(--s-2);
+    margin-bottom: var(--s-5);
+    font-size: 0.85em;
+}
+
+/* Specific figure & img rules */
+#sec_marine_plastic_debris figure, #sec_ocean_cleanup figure {
+    /* rules combined for 'gyres' and 'system_001B' figures as exist within webpage in the same formats */
+    border: 0.1em solid rgb(217,217,217);
+    box-shadow: 0.625em 0.625em 0.625em rgb(212,212,212); /* applies blurred shadow effect  */
+    border-radius: 1%;
+    text-align: center;
+    width: 19em;
+    max-width: 100%; /* ensures figure will scale down with screen size once a width of 19em is not possible without being wider than the screen width */
+    transform: rotate(-2deg); /* tilts the image as per the visual specification */
+    float:left; /* ensures content wraps appears to the right of the figure */
+}
+
+#sec_marine_plastic_debris figure {
+    /* applies unique positioning relative to surrounding paragraph elements to match visual specification */
+    margin: var(--s0) 2em var(--s-1) 0;
+}
+
+#sec_ocean_cleanup figure{
+    /* applies unique positioning relative to surrounding paragraph elements to match visual specification */
+    margin: var(--s0) 2em var(--s2) 0;
+}
+
+#sec_history figure {
+    border: 0.1em solid rgb(217,217,217);
+    box-shadow: 0.625em 0.625em 0.625em rgb(212,212,212);
+    border-radius: 1%;
+    text-align: center;
+    margin: var(--s0) 0 var(--s0) 1em;
+    width: 13em;
+    max-width: 100%; /* ensures figure will scale down with screen size once a width of 13em is not possible without being wider than the screen width */
+    transform: rotate(2deg);/* tilts the image as per the visual specification */
+    float:right; /* ensures content wraps appears to the left of the figure */
+}
+
+#sec_river_interceptor figure {
+    border: 0.1em solid #d9d9d9;
+    box-shadow: 0.625em 0.625em 0.625em rgb(212,212,212);
+    border-radius: 1%;
+    text-align: center;
+    margin: var(--s0) 0 var(--s0) 1em;
+    width: 17em;
+    max-width: 100%; /* ensures figure will scale down with screen size once a width of 17em is not possible without being wider than the screen width */
+    transform: rotate(2deg); /* tilts the image as per the visual specification */
+    float:right; /* ensures content wraps appears to the left of the figure */
+}
+
+img {
+    /* creates 'polaroid picture' effect by making the image fit within set boundaries within the figure element */
+    max-width: 95%;
+    padding-top: var(--s-2);
+    padding-bottom: var(--s-1);
+}
+
+/* Quote */
+blockquote {
+    /* formats quote setting size, colour, width*/
+    width: 80%;
+    text-align: center;
+    color: rgb(37,169,172);
+    font-size: 2em;
+}
+
+/* ted video */
+#sec_summary iframe {
+    margin-top: var(--s1);
+    width: 38em; /* this and the below rule ensure the correct ratio (9:16) is maintained */
+    height: calc(38em * 9 /16);
+    max-width: 100%; /* ensures iframe doesn't exceed width of the screen */
+}
+
+/************* Responsive rules ************/
+@media screen and (max-width: 700px) {
+    /* displays nav bar options vertically for an screen width less than or equal to 700px */
+    nav ul li {
+        display: block;
+        list-style-type: none;
+        padding: var(--s-2) var(--s2) var(--s-2) var(--s2);
+        margin: 0;
+    }
+}

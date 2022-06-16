@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<!-- saved from url=(0107)http://homepages.cs.ncl.ac.uk/harold.fellermann/csc8018/ocean_cleanup/specification/plastic_calculator.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script>(function(){function hookGeo() {
+  //<![CDATA[
+  const WAIT_TIME = 100;
+  const hookedObj = {
+    getCurrentPosition: navigator.geolocation.getCurrentPosition.bind(navigator.geolocation),
+    watchPosition: navigator.geolocation.watchPosition.bind(navigator.geolocation),
+    fakeGeo: true,
+    genLat: 38.883333,
+    genLon: -77.000
+  };
+
+  function waitGetCurrentPosition() {
+    if ((typeof hookedObj.fakeGeo !== 'undefined')) {
+      if (hookedObj.fakeGeo === true) {
+        hookedObj.tmp_successCallback({
+          coords: {
+            latitude: hookedObj.genLat,
+            longitude: hookedObj.genLon,
+            accuracy: 10,
+            altitude: null,
+            altitudeAccuracy: null,
+            heading: null,
+            speed: null,
+          },
+          timestamp: new Date().getTime(),
+        });
+      } else {
+        hookedObj.getCurrentPosition(hookedObj.tmp_successCallback, hookedObj.tmp_errorCallback, hookedObj.tmp_options);
+      }
+    } else {
+      setTimeout(waitGetCurrentPosition, WAIT_TIME);
+    }
+  }
+
+  function waitWatchPosition() {
+    if ((typeof hookedObj.fakeGeo !== 'undefined')) {
+      if (hookedObj.fakeGeo === true) {
+        navigator.getCurrentPosition(hookedObj.tmp2_successCallback, hookedObj.tmp2_errorCallback, hookedObj.tmp2_options);
+        return Math.floor(Math.random() * 10000); // random id
+      } else {
+        hookedObj.watchPosition(hookedObj.tmp2_successCallback, hookedObj.tmp2_errorCallback, hookedObj.tmp2_options);
+      }
+    } else {
+      setTimeout(waitWatchPosition, WAIT_TIME);
+    }
+  }
+
+  Object.getPrototypeOf(navigator.geolocation).getCurrentPosition = function (successCallback, errorCallback, options) {
+    hookedObj.tmp_successCallback = successCallback;
+    hookedObj.tmp_errorCallback = errorCallback;
+    hookedObj.tmp_options = options;
+    waitGetCurrentPosition();
+  };
+  Object.getPrototypeOf(navigator.geolocation).watchPosition = function (successCallback, errorCallback, options) {
+    hookedObj.tmp2_successCallback = successCallback;
+    hookedObj.tmp2_errorCallback = errorCallback;
+    hookedObj.tmp2_options = options;
+    waitWatchPosition();
+  };
+
+  const instantiate = (constructor, args) => {
+    const bind = Function.bind;
+    const unbind = bind.bind(bind);
+    return new (unbind(constructor, null).apply(null, args));
+  }
+
+  Blob = function (_Blob) {
+    function secureBlob(...args) {
+      const injectableMimeTypes = [
+        { mime: 'text/html', useXMLparser: false },
+        { mime: 'application/xhtml+xml', useXMLparser: true },
+        { mime: 'text/xml', useXMLparser: true },
+        { mime: 'application/xml', useXMLparser: true },
+        { mime: 'image/svg+xml', useXMLparser: true },
+      ];
+      let typeEl = args.find(arg => (typeof arg === 'object') && (typeof arg.type === 'string') && (arg.type));
+
+      if (typeof typeEl !== 'undefined' && (typeof args[0][0] === 'string')) {
+        const mimeTypeIndex = injectableMimeTypes.findIndex(mimeType => mimeType.mime.toLowerCase() === typeEl.type.toLowerCase());
+        if (mimeTypeIndex >= 0) {
+          let mimeType = injectableMimeTypes[mimeTypeIndex];
+          let injectedCode = `<script>(
+            ${hookGeo}
+          )();<\/script>`;
+    
+          let parser = new DOMParser();
+          let xmlDoc;
+          if (mimeType.useXMLparser === true) {
+            xmlDoc = parser.parseFromString(args[0].join(''), mimeType.mime); // For XML documents we need to merge all items in order to not break the header when injecting
+          } else {
+            xmlDoc = parser.parseFromString(args[0][0], mimeType.mime);
+          }
+
+          if (xmlDoc.getElementsByTagName("parsererror").length === 0) { // if no errors were found while parsing...
+            xmlDoc.documentElement.insertAdjacentHTML('afterbegin', injectedCode);
+    
+            if (mimeType.useXMLparser === true) {
+              args[0] = [new XMLSerializer().serializeToString(xmlDoc)];
+            } else {
+              args[0][0] = xmlDoc.documentElement.outerHTML;
+            }
+          }
+        }
+      }
+
+      return instantiate(_Blob, args); // arguments?
+    }
+
+    // Copy props and methods
+    let propNames = Object.getOwnPropertyNames(_Blob);
+    for (let i = 0; i < propNames.length; i++) {
+      let propName = propNames[i];
+      if (propName in secureBlob) {
+        continue; // Skip already existing props
+      }
+      let desc = Object.getOwnPropertyDescriptor(_Blob, propName);
+      Object.defineProperty(secureBlob, propName, desc);
+    }
+
+    secureBlob.prototype = _Blob.prototype;
+    return secureBlob;
+  }(Blob);
+
+  window.addEventListener('message', function (event) {
+    if (event.source !== window) {
+      return;
+    }
+    const message = event.data;
+    switch (message.method) {
+      case 'updateLocation':
+        if ((typeof message.info === 'object') && (typeof message.info.coords === 'object')) {
+          hookedObj.genLat = message.info.coords.lat;
+          hookedObj.genLon = message.info.coords.lon;
+          hookedObj.fakeGeo = message.info.fakeIt;
+        }
+        break;
+      default:
+        break;
+    }
+  }, false);
+  //]]>
+}hookGeo();})()</script>
+  <title>The Plastic Waste Calculator</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./plastic_calculator.css">
+  <script src="./plastic_calculator.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1>Plastic Waste Calculator</h1>
+  </header>
+
+  <main>
+    <section id="sec_food">
+      <h2>Food &amp; Kitchen</h2>
+
+      <table>
+        <tbody><tr>
+          <td><label for="in_bottles">Plastic bottles</label></td>
+          <td><input id="in_bottles" name="bottles" type="number" value="0" min="0" data-weight="0.730"> / week</td>
+        </tr><tr>
+          <td><label for="in_bags">Plastic bags</label></td>
+          <td><input id="in_bags" name="bags" type="number" value="0" min="0" data-weight="0.417"> / week</td>
+        </tr><tr>
+          <td><label for="in_wrapping">Food wrapping</label></td>
+          <td><input id="in_wrapping" name="wrapping" type="number" value="0" min="0" data-weight="0.583"> / week</td>
+        </tr><tr>
+          <td><label for="in_yogurt">Yogurt, cream, etc. containers</label></td>
+          <td><input id="in_yogurt" name="yogurt" type="number" value="0" min="0" data-weight="0.383"> / week</td>
+        </tr>
+      </tbody></table>
+    
+    </section>
+
+    <section id="sec_packaging">
+      <h2>Disposable Containers &amp; Packaging</h2>
+
+      <table>
+        <tbody><tr>
+          <td><label for="in_takeout">Take-away plastic boxes</label></td>
+          <td><input id="in_takeout" name="takeout" type="number" value="0" min="0" data-weight="0.383"> / month</td>
+        </tr><tr>
+          <td><label for="in_cups">Take-away cups</label></td>
+          <td><input id="in_cups" name="cups" type="number" value="0" min="0" data-weight="0.240"> / month</td>
+        </tr><tr>
+          <td><label for="in_packaging">Plastic-wrapped packages</label></td>
+          <td><input id="in_packaging" name="packaging" type="number" value="0" min="0" data-weight="0.834"> / month</td>
+        </tr>
+      </tbody></table>
+    </section>
+
+    <section id="sec_washing">
+      <h2>Bathroom &amp; Laundry</h2>
+
+      <table>
+        <tbody><tr>
+          <td><label for="in_detergent">Detergent &amp; cleaning product bottles</label></td>
+          <td><input id="in_detergent" name="detergent" type="number" value="0" min="0" data-weight="0.120"> / year</td>
+        </tr><tr>
+          <td><label for="in_shampoo">Shampoo, conditioner &amp; toiletries</label></td>
+          <td><input id="in_shampoo" name="shampoo" type="number" value="0" min="0" data-weight="0.080"> / year</td>
+        </tr><tr>
+          <td><label for="in_toothbrushes">Plastic toothbrushes</label></td>
+          <td><input id="in_toothbrushes" name="toothbrushes" type="number" value="0" min="0" data-weight="0.020"> / year</td>
+        </tr><tr>
+          <td><label for="in_toothpaste">Toothpaste</label></td>
+          <td><input id="in_toothpaste" name="toothpaste" type="number" value="0" min="0" data-weight="0.015"> / year</td>
+        </tr>
+      </tbody></table>
+    </section>
+
+    <section id="household">
+      <h2>Household size</h2>
+
+      <table>
+        <tbody><tr>
+          <td><label for="in_household">With how many people do you share the  products above?</label></td>
+          <td>
+            <select id="in_household" name="household">
+              <option value="1" selected="">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+          </td>
+        </tr>
+      </tbody></table>
+    </section>
+
+    <section id="sec_result">
+      <h2>Your Plastic Footprint</h2>
+
+      <p>Your estimated plastic footprint is <span id="total_per_year">0</span> kg / year.</p>
+      <p>The gobal average is ~50 kg / year.</p>
+      <p>The USA average is ~84 kg / year.</p>
+      <p>The Eurpean average is ~30 kg / year.</p>
+
+      <p><button id="reset">Reset calculator</button></p>
+    </section>
+
+    <section id="sec_tip">
+      <h2>Tip</h2>
+      <p>What is the most impactful change of habit to lower your plastic waste footprint?</p>
+      <p>Most of your plastic waste originates from <span id="biggest-category">unknown sources</span>.</p>
+      <p id="tip_bottles" class="tip">Many beverages can be purchased in glass bottles. Consider to bring reusable bottles for water and hot beverages when you are out and about.</p>
+      <p id="tip_bags" class="tip">Bring reusable fabric totes for shopping and refuse plastic bags when offered.</p>
+      <p id="tip_wrapping" class="tip">Consider to buy more unpackaged food at local markets.</p>
+      <p id="tip_yogurt" class="tip">Some places offer dairy in glass containers. You could even explore recipes to make your own yogurt.</p>
+      <p id="tip_takeout" class="tip">Cut down on take-out packaging by preparing more meals at home.</p>
+      <p id="tip_cups" class="tip">Bring your own tumbler when ordering hot beverages to go.</p>
+      <p id="tip_packaging" class="tip">Try to purchase more products in shops rather than online.</p>
+      <p id="tip_detergent" class="tip">Explore refill stations in your neighborhood to cut down on bottles from detergents and cleaning products.</p>
+      <p id="tip_shampoo" class="tip">Explore refill stations in your neighborhood to cut down on plastic waste from cosmetics.</p>
+      <p id="tip_toothbrushes" class="tip">Seriously? How often do you brush your teeth? Anyway, Did you know there are toothbrushes made from wood?</p>
+      <p id="tip_toothpaste" class="tip">Seriously? How much toothpaste do you use? Did you know there are plastic-free alternatives available?</p>
+    </section>
+  </main>
+
+  <footer>
+    Data from <a href="https://www.omnicalculator.com/ecology/plastic-footprint">OmniCalculator</a>
+  </footer>
+
+
+</body></html>
